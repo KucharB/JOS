@@ -7,16 +7,14 @@ module prescaler#(parameter width = 20)(
 
 reg [width-1:0] count;
 
-always @(posedge clk)
-    begin
+always @(posedge clk)  begin
         if(clr)
             begin
                 count <= {l_bit{1'b0}};
             end
         else
             begin
-                if (ce)
-                    begin
+                if (ce)  begin
                         count <= count +1;
                     end
             end
