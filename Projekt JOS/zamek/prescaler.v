@@ -15,11 +15,12 @@ always @(posedge clk)  begin
         else
             begin
                 if (ce)  begin
-                        count <= count +1;
+                        count <= count + 1;
                     end
+                else 
             end
     end
 
-assign co = ce & (&count);
+assign co = (ce & (&count)) | ~ce ;
 
 endmodule

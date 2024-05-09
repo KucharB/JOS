@@ -12,6 +12,20 @@ Wyjścia: LED_sterring, PIPO_shift, Pipo_reset
 1111 0 5
 0000 1 6        3 bity (dwie dotakowe możliwości)
 */
+
+/*
+0000
+0001
+0011
+0111
+1111
+5 możliwości (2^3, 3 bity, 3 nadmiarowo)
+0x00,0x01,0x02,0x03,0x04
+
+0x5 alarm on
+0x6 alarm off
++0x8 blink on
+*/
 module machine_state(
     input clk,
     input key,
@@ -101,17 +115,15 @@ always @(posedge clk)
                 end
             state3:
                 begin       //Jeśli podczas oczekiwanie na zakończenie odliczania wciśnięto przycisk to rozpoczynamy ustawienie nowego stanu, w momencie gdy odliczanie się zakończy
-                                // przechodzimy do stanu 0 oraz zamykamy zamek
+                            // przechodzimy do stanu 0 oraz zamykamy zamek
                     pipo_reset <= 1'b0;
-                    if(counting & key)
-                        begin
+                    if(counting & key)  begin
                             state <= state0;
                             setting_new_pass <= 1'b1;
                         end
                     else if (counting)
                         state <= state3;
-                    else
-                        begin
+                    else    begin
                             state <= state0;
                             lock <= 1'b0;
                         end
