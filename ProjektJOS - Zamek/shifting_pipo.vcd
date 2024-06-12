@@ -1,0 +1,191 @@
+$date
+	Thu Apr 25 21:54:09 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module shifting_pipo_tb $end
+$var wire 16 ! data_o [15:0] $end
+$var reg 1 " ce $end
+$var reg 1 # clk $end
+$var reg 1 $ clr $end
+$var reg 4 % data_i [3:0] $end
+$scope module UUT $end
+$var wire 1 " ce $end
+$var wire 1 # clk $end
+$var wire 1 $ clr $end
+$var wire 4 & data_in [3:0] $end
+$var wire 16 ' data_o [15:0] $end
+$scope module reg0 $end
+$var wire 1 " ce $end
+$var wire 1 # clk $end
+$var wire 1 $ clr $end
+$var wire 4 ( data_i [3:0] $end
+$var parameter 32 ) width $end
+$var reg 4 * data_o [3:0] $end
+$upscope $end
+$scope module reg1 $end
+$var wire 1 " ce $end
+$var wire 1 # clk $end
+$var wire 1 $ clr $end
+$var wire 4 + data_i [3:0] $end
+$var parameter 32 , width $end
+$var reg 4 - data_o [3:0] $end
+$upscope $end
+$scope module reg2 $end
+$var wire 1 " ce $end
+$var wire 1 # clk $end
+$var wire 1 $ clr $end
+$var wire 4 . data_i [3:0] $end
+$var parameter 32 / width $end
+$var reg 4 0 data_o [3:0] $end
+$upscope $end
+$scope module reg3 $end
+$var wire 1 " ce $end
+$var wire 1 # clk $end
+$var wire 1 $ clr $end
+$var wire 4 1 data_i [3:0] $end
+$var parameter 32 2 width $end
+$var reg 4 3 data_o [3:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100 2
+b100 /
+b100 ,
+b100 )
+$end
+#0
+$dumpvars
+b0 3
+b0 1
+b0 0
+b0 .
+b0 -
+b0 +
+b0 *
+b0 (
+b0 '
+b0 &
+b0 %
+1$
+0#
+0"
+b0 !
+$end
+#5
+1#
+#10
+0#
+1"
+#15
+1#
+#20
+0#
+0$
+#25
+1#
+#30
+0#
+b1 %
+b1 &
+b1 1
+#35
+b1 .
+b1000000000000 !
+b1000000000000 '
+b1 3
+1#
+#40
+0#
+b10 %
+b10 &
+b10 1
+#44
+0"
+#45
+1#
+#50
+0#
+#55
+1#
+#60
+0#
+#62
+1"
+#65
+b10 .
+b1 +
+b10 3
+b10000100000000 !
+b10000100000000 '
+b1 0
+1#
+#70
+0#
+#72
+b11 %
+b11 &
+b11 1
+#75
+b1 (
+b10 +
+b11 .
+b1 -
+b10 0
+b11001000010000 !
+b11001000010000 '
+b11 3
+1#
+#80
+0#
+#82
+b100 %
+b100 &
+b100 1
+#85
+b100 .
+b11 +
+b10 (
+b100 3
+b11 0
+b10 -
+b100001100100001 !
+b100001100100001 '
+b1 *
+1#
+#90
+0#
+#95
+b11 (
+b100 +
+b10 *
+b11 -
+b100010000110010 !
+b100010000110010 '
+b100 0
+1#
+#100
+0#
+#102
+b0 .
+b0 +
+b0 (
+b0 3
+b0 0
+b0 -
+b0 !
+b0 '
+b0 *
+1$
+#105
+1#
+#110
+0#
+#112

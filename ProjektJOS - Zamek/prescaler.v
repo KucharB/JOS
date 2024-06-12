@@ -1,0 +1,25 @@
+module prescaler#(parameter width = 24)(
+    input ce,
+    input clk,
+    input clr,
+    output co
+);
+
+reg [width-1:0] count;
+
+always @(posedge clk)  begin
+        if(clr)
+            begin
+                count <= {width{1'b0}};
+            end
+        else
+            begin
+                if (ce)  begin
+                        count <= count + 1;
+                    end
+            end
+    end
+
+assign co = count[width-1] | ~ce;
+
+endmodule
