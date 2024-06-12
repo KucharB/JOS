@@ -1,0 +1,136 @@
+/*
+Wej�cia: clk, przycisk(key), pass_check
+
+Wyj�cia: LED_sterring, PIPO_shift, Pipo_reset
+*/
+//4 diody jako sygnalizacji wpis�w znak�w, 1 dioda jako alarm,
+/*
+0000 0 1
+1000 0 2
+1100 0 3
+1110 0 4
+1111 0 5
+0000 1 6        3 bity (dwie dotakowe mo�liwo�ci)
+*/
+module machine_state(
+    input clk,
+    input key,
+    input pass_check,
+    input counting,
+    input clr,
+
+    output [2:0] LED_sterring,
+    output reg pipo_shift,
+    output reg pipo_reset,
+    output reg alarm,
+    output reg pipo_load,
+    output reg lock
+);
+	 parameter state0 = 3'b000;
+    parameter state1 = 3'b001;
+    parameter state2 = 3'b010;
+    parameter state3 = 3'b011;
+
+    reg setting_new_pass;
+    reg [2:0] sign_counter;
+    reg [1:0] bad_pass;
+    reg [2:0] state = state0;
+
+  
+
+always @(posedge clk or posedge clr)
+    begin
+ if (clr)
+ begin
+    bad_pass <= 2'b00;
+    sign_counter <= 3'b000;
+    pipo_shift <= 1'b0;
+    pipo_reset<= 1'b0;
+    alarm<= 1'b0;
+    pipo_load<= 1'b0;
+    lock<= 1'b0;
+ end
+ else
+    begin
+        case (state)
+            state0: //stan IDLE, je�li wprowadzono 4 znaki i wci�ni�to przycisk nale�y rozpo�cz�� sprawdzanie poprawno�ci has�a, 
+                    begin
+                pipo_reset <= 1'b0; //!!
+                pipo_load <= 1'b0; 
+                    if(key & (sign_counter == 3'b100))
+                        begin
+                            if(setting_new_pass)
+                            begin
+                                pipo_load <= 1'b1;    //Je�eli znajdujemy si� w trybie ustawiania has�a to wpisujemy nowe has�o
+                            end
+                            state <= state2;
+                        end
+                    else if(key) //w przeciwnym razie nale�y wpisa� kolejny 4-bitowy znak
+                        begin
+                            state <= state1;
+                            sign_counter <= sign_counter + 1;
+                            pipo_shift <= 1'b1;
+                        end
+                end 
+            state1:
+                begin //na szeroko�� jendego zbocza zegarowego zostanie wygenrowany sygna� pipo_shift
+                    state <= state0;
+                    pipo_shift <= 1'b0;
+                end
+            state2:                     // resetujemy liczb� wpisanych znak�w
+                begin
+                    if(setting_new_pass) //obecno�� stanu 2 oznacza wype�nienie rejestru przesuwaj�cego czterema znakami
+                        begin           //Je�eli znajdujemy si� w trybie ustawiania has�a kasujemy wcze�niej ustawione sygna�y oraz przechodzimy do stanu 0
+                            pipo_reset <= 1'b0;
+                            pipo_load <= 1'b0;
+                            setting_new_pass <= 1'b0;
+                            state <= state0;
+                            sign_counter <= 3'b000;
+                        end
+                    else if(pass_check)
+                        begin               //Je�eli has�o jest poprawne to kasujemy ew. wyst�pienie alarmu, resetujemy licznik niepoprawnie wpisanych hase�, oraz otwieramy zamek
+                            state <= state3;
+                            bad_pass <= 2'b00;
+                            alarm <= 1'b0;
+                            pipo_reset <= 1'b1;
+                            lock <= 1'b1;
+                            sign_counter <= 3'b000;
+                        end
+                    else                    //Je�eli has�o jest niepoprawne to inkrementujemy liczb� niepoprawnie wpisanych hase�, je�eli ta liczba jest r�wna co najmniej 3 to ustawiamy
+                                            // alarm, resetujemy rejestr przesuwaj�cy
+                        begin
+                            state <= state0;
+                            bad_pass <= bad_pass + 1;
+                            sign_counter <= 3'b000;
+                            if(bad_pass == 2'b11)
+                                begin
+                                    alarm <= 1'b1;
+                                end
+                            pipo_reset <= 1'b1;
+                        end
+                end
+            state3:
+                begin       //Je�li podczas oczekiwanie na zako�czenie odliczania wci�ni�to przycisk to rozpoczynamy ustawienie nowego stanu, w momencie gdy odliczanie si� zako�czy
+                                // przechodzimy do stanu 0 oraz zamykamy zamek
+                    pipo_reset <= 1'b0;
+                    if(counting & key)
+                        begin
+                            state <= state0;
+                            setting_new_pass <= 1'b1;
+                        end
+                    else if (counting)
+                        state <= state3;
+                    else
+                        begin
+                            state <= state0;
+                            lock <= 1'b0;
+                        end
+                end
+            default: state <= state0;
+        endcase
+    end
+    end
+
+assign LED_sterring = sign_counter;
+
+endmodule
